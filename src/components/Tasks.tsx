@@ -1,20 +1,37 @@
-import React from 'react'
-import {Task} from './Task'
-import {atom, useRecoilValue} from 'recoil'
+import React, {useEffect} from 'react'
 
-export const tasksState = atom<number[]>({
-    key: 'tasks',
-    default: [],
-})
+// Components
+import {Task} from './Task'
+
+// Stores
+import {useRecoilState} from 'recoil'
+import {getTasks, tasksAtom, TasksType} from '../store/task'
 
 export const Tasks: React.FC = () => {
-    const tasks = useRecoilValue(tasksState)
+
+    const [tasks, setTasks] = useRecoilState<TasksType>(tasksAtom)
+
+    useEffect(() => {
+        getTasks().then((data ) => setTasks(data))
+    }, [])
+
+    const handleClick = (id: number | null) => {
+        // タスクの完了切り替え
+    }
+
+    if (!tasks || tasks.length <= 0) {
+         return <p>読み込み中</p>
+    }
 
     return (
-        <div>
-            {tasks.map((id) => (
-                <Task id={id} key={id} />
+        <ul>
+            {tasks.map((t, i) => (
+                <Task key={i}
+                      id={t.id}
+                      label={t.label}
+                      isComplete={t.isComplete}
+                      onClick={() => handleClick(t.id)}/>
             ))}
-        </div>
+        </ul>
     )
 }

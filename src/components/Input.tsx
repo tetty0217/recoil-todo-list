@@ -3,12 +3,42 @@ import styled from 'styled-components'
 import {
     Container as TaskContainer,
     TextStyle as TaskTextStyle,
-    taskState,
 } from './Task'
 import {useRecoilCallback, useRecoilValue} from 'recoil'
-import {tasksState} from './Tasks'
+import {tasksAtom} from '../store/task'
 
-const InsertInput = styled.input`
+export const Input: React.FC = () => {
+    const [label, setLabel] = useState('')
+    const tasks = useRecoilValue(tasksAtom)
+
+    const addTask = useRecoilCallback(({set}) => {
+        return (label: string) => {
+            set(tasksAtom, [...tasks, {id: null, isComplete: false, label: label}])
+        }
+    })
+
+    return (
+        <TaskContainer>
+            <Field
+                placeholder="Insert a new task..."
+                type="search"
+                autoComplete="off"
+                value={label}
+                onChange={({currentTarget}) => {
+                    setLabel(currentTarget.value)
+                }}
+                onKeyUp={({keyCode}) => {
+                    if (keyCode === 13) {
+                        addTask(label)
+                        setLabel('')
+                    }
+                }}
+            />
+        </TaskContainer>
+    )
+}
+
+const Field = styled.input`
     width: 100%;
     height: 100%;
     appearance: none;
@@ -23,39 +53,3 @@ const InsertInput = styled.input`
         -webkit-appearance: none;
     }
 `
-
-export const Input: React.FC = () => {
-    const [label, setLabel] = useState('')
-    const tasks = useRecoilValue(tasksState)
-
-    const insertTask = useRecoilCallback(({set}) => {
-        return (label: string) => {
-            const newTaskId = tasks.length
-            set(tasksState, [...tasks, newTaskId])
-            set(taskState(newTaskId), {
-                label: label,
-                complete: false,
-            })
-        }
-    })
-
-    return (
-        <TaskContainer>
-            <InsertInput
-                placeholder="Insert a new task..."
-                type="search"
-                autoComplete="off"
-                value={label}
-                onChange={({currentTarget}) => {
-                    setLabel(currentTarget.value)
-                }}
-                onKeyUp={({keyCode}) => {
-                    if (keyCode === 13) {
-                        insertTask(label)
-                        setLabel('')
-                    }
-                }}
-            />
-        </TaskContainer>
-    )
-}

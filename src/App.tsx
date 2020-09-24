@@ -1,6 +1,6 @@
 import React from 'react'
 import {Input} from './components/Input'
-import {Stats} from './components/Stats'
+import {Total} from './components/Total'
 import {Tasks} from './components/Tasks'
 import {ThemeProvider, GlobalStyles, Page} from './components/theme'
 import {Header, darkModeState} from './components/Header'
@@ -10,7 +10,7 @@ const Home = () => {
     return (
         <Page>
             <Header />
-            <Stats />
+            <Total />
             <Tasks />
             <Input />
         </Page>
