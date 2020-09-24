@@ -1,19 +1,23 @@
-import {atom} from 'recoil'
+import {atom, atomFamily} from 'recoil'
 
 export type TaskType = {
-    id:         number | null
-    label:      string
+    id: number
+    label: string
     isComplete: boolean
 }
 
 export type TasksType = Array<TaskType>
 
-export const taskAtom = atom({
-    key: 'task',
-    default: null,
-})
-
 export const tasksAtom = atom({
     key: 'tasks',
     default: [] as TasksType,
+})
+
+export const taskAtomF = atomFamily({
+    key: 'task',
+    default: {
+        id: 0,
+        label: '',
+        isComplete: false,
+    },
 })

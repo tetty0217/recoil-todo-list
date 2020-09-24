@@ -11,7 +11,7 @@ export const colors = {
         text: '#dce1e8',
     },
     light: {
-        background: '#e9ecf3',
+        background: '#fff',
         card: '#ffffff',
         text: '#20252a',
     },
@@ -19,8 +19,6 @@ export const colors = {
 
 export const GlobalStyles = createGlobalStyle`
     body {
-        background-color: ${(props: any) => props.theme.background};
-        color: ${(props: any) => props.theme.text};
         display: flex;
         flex-direction: column;
         align-items: center;

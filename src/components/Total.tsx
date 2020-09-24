@@ -9,52 +9,33 @@ export const Total: React.FC = () => {
 
     return (
         <Container>
-            <Point title="終わったタスク" value={completedCount}/>
+            <StatContainer>
+                <Label>終わったタスク：</Label>
+                <Count>{completedCount}</Count>
+            </StatContainer>
         </Container>
     )
 }
 
-const Point: React.FC<{title: string; value: string | number}> = ({
-                                                                      title,
-                                                                      value,
-                                                                  }) => {
-    return (
-        <StatContainer>
-            <StatValue>{value}</StatValue>
-            <StatLabel>{title}</StatLabel>
-        </StatContainer>
-    )
-}
-
 const StatContainer = styled.div`
-    flex: 1;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    color: ${(props) => props.theme.text};
 `
 
-const StatValue = styled.div`
+const Count = styled.div`
     font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
+    color: #3F51B5;
 `
 
-const StatLabel = styled.div`
-    font-size: 11px;
+const Label = styled.div`
+    margin: 0 6px 0 0;
     text-transform: uppercase;
 `
 
-
-const Divider = styled.div`
-    width: 1px;
-    height: 42px;
-    background-color: ${(props) => props.theme.text};
-    opacity: 0.3;
-`
-
 const Container = styled(Card)`
-    padding-top: 15px;
-    padding-bottom: 15px;
+    padding: 0;
     margin-bottom: 20px;
+    border-radius: 0;
+    border-bottom: 1px solid #607D8B;
 `

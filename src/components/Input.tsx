@@ -1,11 +1,8 @@
 import React, {useState} from 'react'
 import styled from 'styled-components'
-import {
-    Container as TaskContainer,
-    TextStyle as TaskTextStyle,
-} from './Task'
+import {TextStyle as TaskTextStyle} from './Task'
 import {useRecoilCallback, useRecoilValue} from 'recoil'
-import {tasksAtom} from '../store/task'
+import {newTaskId, taskAtomF, tasksAtom} from '../store/task'
 
 export const Input: React.FC = () => {
     const [label, setLabel] = useState('')
@@ -13,43 +10,38 @@ export const Input: React.FC = () => {
 
     const addTask = useRecoilCallback(({set}) => {
         return (label: string) => {
-            set(tasksAtom, [...tasks, {id: null, isComplete: false, label: label}])
+            const newId = newTaskId(tasks)
+            const newTask = {id: newId, label: label, isComplete: false}
+            set(tasksAtom, [...tasks, newTask])
+            set(taskAtomF(newId), newTask)
         }
     })
 
     return (
-        <TaskContainer>
-            <Field
-                placeholder="Insert a new task..."
-                type="search"
-                autoComplete="off"
-                value={label}
-                onChange={({currentTarget}) => {
-                    setLabel(currentTarget.value)
-                }}
-                onKeyUp={({keyCode}) => {
-                    if (keyCode === 13) {
-                        addTask(label)
-                        setLabel('')
-                    }
-                }}
-            />
-        </TaskContainer>
+        <Field
+            placeholder="タスクを入力してね"
+            value={label}
+            onChange={({currentTarget}) => {
+                setLabel(currentTarget.value)
+            }}
+            onKeyUp={({keyCode}) => {
+                if (keyCode === 13) {
+                    addTask(label)
+                    setLabel('')
+                }
+            }}
+        />
     )
 }
 
 const Field = styled.input`
+    margin: 16px 0 0;
+    padding: 16px;
     width: 100%;
     height: 100%;
     appearance: none;
-    border: 0;
+    border: 1px solid #607d8b;
     background-color: transparent;
     outline: none;
-    -webkit-appearance: textfield;
     ${TaskTextStyle};
-
-    ::-webkit-search-decoration,
-    ::-webkit-search-cancel-button {
-        -webkit-appearance: none;
-    }
 `

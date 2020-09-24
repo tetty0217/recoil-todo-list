@@ -1,24 +1,30 @@
 import React from 'react'
 import styled, {css} from 'styled-components'
 import {Card} from './Card'
-import {TaskType} from '../store/task'
+import {taskAtomF, TaskType} from '../store/task'
+import {useRecoilState} from 'recoil'
 
-type InnerProps = {
-    onClick: () => void
+type OuterProps = {
+    id: number
 }
-type Props = TaskType & InnerProps
+
+type Props = OuterProps
 
 export const Task: React.FC<Props> = (props) => {
-    const {label, isComplete, onClick} = props
+    const {id} = props
+
+    const [{isComplete, label}, setTask] = useRecoilState<TaskType>(
+        taskAtomF(id),
+    )
+
+    const handleClick = () => {
+        setTask({id, label, isComplete: !isComplete})
+    }
 
     return (
-        <Container
-            onClick={onClick}
-        >
+        <Container onClick={handleClick}>
             <CheckBox checked={isComplete} />
-            <Label>
-                {label}
-            </Label>
+            <Content>{label}</Content>
         </Container>
     )
 }
@@ -35,6 +41,7 @@ export const Container = styled(Card)`
     display: flex;
     flex-direction: row;
     align-items: center;
+    background-color: #ffc107;
 `
 
 const CheckBox = styled.div<{checked: boolean}>`
@@ -46,17 +53,17 @@ const CheckBox = styled.div<{checked: boolean}>`
     align-items: center;
     justify-content: center;
     display: flex;
-    background-color: ${(props) => props.theme.background};
+    background-color: #fff;
     cursor: pointer;
 
     ${(props) =>
-    props.checked &&
-    css`
-            background-color: transparent;
+        props.checked &&
+        css`
+            background-color: #ff5722;
         `}
 `
 
-const Label = styled.div`
+const Content = styled.div`
     position: relative;
     ${TextStyle}
 `

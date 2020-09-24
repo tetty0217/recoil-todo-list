@@ -4,33 +4,37 @@ import React, {useEffect} from 'react'
 import {Task} from './Task'
 
 // Stores
-import {useRecoilState} from 'recoil'
-import {getTasks, tasksAtom, TasksType} from '../store/task'
+import {useRecoilCallback, useRecoilState} from 'recoil'
+import {getTasks, taskAtomF, tasksAtom, TasksType} from '../store/task'
 
 export const Tasks: React.FC = () => {
-
     const [tasks, setTasks] = useRecoilState<TasksType>(tasksAtom)
 
+    const addTasksFamily = useRecoilCallback(({set}) => {
+        return (dataList: TasksType) => {
+            dataList.forEach((t) => {
+                set(taskAtomF(t.id), t)
+            })
+        }
+    })
+
+    // タスク取得（動作用の擬似API）
+    // atomFamilyへの登録
     useEffect(() => {
-        getTasks().then((data ) => setTasks(data))
+        getTasks().then((data) => {
+            setTasks(data)
+            addTasksFamily(data)
+        })
     }, [])
 
-    const handleClick = (id: number | null) => {
-        // タスクの完了切り替え
-    }
-
     if (!tasks || tasks.length <= 0) {
-         return <p>読み込み中</p>
+        return <p>読み込み中</p>
     }
 
     return (
         <ul>
             {tasks.map((t, i) => (
-                <Task key={i}
-                      id={t.id}
-                      label={t.label}
-                      isComplete={t.isComplete}
-                      onClick={() => handleClick(t.id)}/>
+                <Task key={i} id={t.id} />
             ))}
         </ul>
     )
